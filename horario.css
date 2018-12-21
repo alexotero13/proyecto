@@ -1,0 +1,191 @@
+
+
+	body {
+		background-color: #39e600;
+		width: 900px;
+		margin-top:5px;
+		margin-bottom:5px;
+		margin-left:auto;
+		margin-right:auto;}
+	
+	#titHorario { 
+		height : 40px;
+		font-size:30px;
+		text-align: center;
+	}
+
+	#DivPrincipal { 
+		height : auto;
+		display : flex;
+		width : auto; 
+	}
+	#DivIzquierdo { 
+		background-color: pink;
+		order:1;
+/*		float: left;  */
+		width: 150px;
+		margin-right:10px;
+	}
+	#DivIzquierdo  button{ 
+		margin-bottom:10px;
+	}	
+	#DivCentro { 
+/*		background-color: grey;  */
+		order:2;
+		width:600px;
+	}
+	#DivNotaMedia { 
+		background-color: blue;
+		float: right;
+		order:3;
+		width : 200px;
+		margin-left:10px;
+	}
+	#tablaNM {  
+		border:2px solid white;
+		background-color: orange;
+	}
+	#tablaNM td {
+		size: 10px;
+		border:1px solid black;
+	}
+	#tablaNM tr {
+		size: 10px;
+		border:1px solid grey;
+	}
+	#DivAbajo { 
+		background-color: orange;
+		float : none; 
+		width : auto;
+		margin-top:3px;
+	}
+	#DivHorario { 
+		background-color: orange;
+		float : none; 
+		width : auto;
+		text-align: center;
+	}
+	#DivFechas { 
+		Display: flex; 
+	}
+	#DivFechaHoy { 
+		width: 280px; 
+		background-color: brown;
+		float: left;
+		order: 1;
+		margin-top: 5px;
+		margin-right: 5px;
+	}
+	#DivCalendario { 
+		width: 280px; 
+		background-color: brown;
+		float: right;
+		order: 2;
+		margin-top: 5px;
+	}
+
+	#horario {   
+		border:2px solid white;
+		background-color: yellow; 
+		 margin: 0 auto;
+       text-align: left;
+	}
+	
+	#tablaTareas {   
+		border:2px solid white;
+		background-color: yellow; 
+		width: 500px;
+	}
+
+	#tablaTareas td, #horario td {
+		border:1px solid black;
+		height:30px;
+	}
+	
+	#tarea {
+		width:400px;
+		height: 40px;
+	}
+		
+	#hora{ 
+		background-color: blue;}
+	.fisica{
+		background-color: purple;}
+	.matematicas{ 
+		background-color: orange;}
+	.ingles{
+		background-color: white;}
+	.lengua{
+		background-color: aqua;}
+	.tecindustrial{
+		background-color: brown;}
+	.dibujo{
+		background-color: #ff0066;}
+	.hespaña{
+		background-color: red;}
+	.tic{
+		background-color: lime;}
+
+	#divFantasma {
+		margin-top: 2px;
+		height: 230px;
+		width: 170px;
+	}
+	#divFantasma img{
+		visibility:hidden;
+	}
+	
+#divFantasma:hover .object {
+  display: block;
+  position: relative;
+  left: 0;
+  height: 8px;
+  padding: 25px;
+  width: 8px;
+  background-color: red;
+  border-radius: 45px;
+	
+   margin-left: 80px;
+
+
+  -webkit-animation: mover 4s ease 0s infinite normal none;
+  animation: mover 1s ease-in 0s infinite normal none;
+
+}
+@keyframes mover {
+  0% {top: 5%;
+ /*   transition: all 2s ease-in; */
+  }
+  50% {
+    top: 88%;
+    transition: all 0.5s ease-in 0s; 
+  }
+  100% {
+    top: 5%;
+  /*  transition: all 0.5s ease-out; */
+  }
+}
+		
+#divFantasma:hover img {
+  visibility:visible;
+  position: relative;
+  margin-left:65px;
+  margin-top: 190px;
+  top: 100%;
+  animation: moverImg 1s ease 0s infinite normal none;
+}
+@keyframes moverImg {
+  0% {
+  /*  top: 100%; */
+  /*  transition: all 0.5s ease-in 0s;  */
+  }
+  80% {
+    top: 100%;
+    transform: scale(0.8);
+  /*  transition: all 0.5s ease-out; */
+  }
+  100% {
+    top: 100%;
+    transform: scale(1);
+  /*  transition: all 0.5s ease-out; */
+  }

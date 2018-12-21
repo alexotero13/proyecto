@@ -1,0 +1,364 @@
+<html>
+	<head>
+		<title>Horario</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="horario.css" type="text/css"/>
+		<script src="horario.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+		<script>
+		// Five moving bodies
+			var movers = [];
+
+			// Liquid
+			var liquid;
+
+			function setup() {
+			  createCanvas(640, 360);
+			  reset();
+			  // Create liquid object
+			  liquid = new Liquid(0, height/2, width, height/2, 0.1);
+			}
+
+			function draw() {
+			  background(127);
+			  
+			  // Draw water
+			  liquid.display();
+
+			  for (var i = 0; i < movers.length; i++) {
+				
+				// Is the Mover in the liquid?
+				if (liquid.contains(movers[i])) {
+				  // Calculate drag force
+				  var dragForce = liquid.calculateDrag(movers[i]);
+				  // Apply drag force to Mover
+				  movers[i].applyForce(dragForce);
+				}
+
+				// Gravity is scaled by mass here!
+				var gravity = createVector(0, 0.1*movers[i].mass);
+				// Apply gravity
+				movers[i].applyForce(gravity);
+			   
+				// Update and display
+				movers[i].update();
+				movers[i].display();
+				movers[i].checkEdges();
+			  }
+			  
+			}
+
+
+			function mousePressed() {
+			  reset();
+			}
+
+			// Restart all the Mover objects randomly
+			function reset() {
+			  for (var i = 0; i < 9; i++) {
+				movers[i] = new Mover(random(0.5, 3), 40+i*70, 0);
+			  }
+			}
+
+			var Liquid = function(x, y, w, h, c) {
+			  this.x = x;
+			  this.y = y;
+			  this.w = w;
+			  this.h = h;
+			  this.c = c;
+			};
+			  
+			// Is the Mover in the Liquid?
+			Liquid.prototype.contains = function(m) {
+			  var l = m.position;
+			  return l.x > this.x && l.x < this.x + this.w &&
+					 l.y > this.y && l.y < this.y + this.h;
+			};
+			  
+			// Calculate drag force
+			Liquid.prototype.calculateDrag = function(m) {
+			  // Magnitude is coefficient * speed squared
+			  var speed = m.velocity.mag();
+			  var dragMagnitude = this.c * speed * speed;
+
+			  // Direction is inverse of velocity
+			  var dragForce = m.velocity.copy();
+			  dragForce.mult(-1);
+			  
+			  // Scale according to magnitude
+			  // dragForce.setMag(dragMagnitude);
+			  dragForce.normalize();
+			  dragForce.mult(dragMagnitude);
+			  return dragForce;
+			};
+			  
+			Liquid.prototype.display = function() {
+			  noStroke();
+			  fill(50);
+			  rect(this.x, this.y, this.w, this.h);
+			};
+
+			function Mover(m,x,y) {
+			  this.mass = m;
+			  this.position = createVector(x,y);
+			  this.velocity = createVector(0,0);
+			  this.acceleration = createVector(0,0);
+			}
+
+			// Newton's 2nd law: F = M * A
+			// or A = F / M
+			Mover.prototype.applyForce = function(force) {
+			  var f = p5.Vector.div(force,this.mass);
+			  this.acceleration.add(f);
+			};
+			  
+			Mover.prototype.update = function() {
+			  // Velocity changes according to acceleration
+			  this.velocity.add(this.acceleration);
+			  // position changes by velocity
+			  this.position.add(this.velocity);
+			  // We must clear acceleration each frame
+			  this.acceleration.mult(0);
+			};
+
+			Mover.prototype.display = function() {
+			  stroke(0);
+			  strokeWeight(2);
+			  fill(255,127);
+			  ellipse(this.position.x,this.position.y,this.mass*16,this.mass*16);
+			};
+
+			// Bounce off bottom of window
+			Mover.prototype.checkEdges = function() {
+			  if (this.position.y > (height - this.mass*8)) {
+				// A little dampening when hitting the bottom
+				this.velocity.y *= -0.9;
+				this.position.y = (height - this.mass*8);
+			  }
+			};		
+		</script>
+	</head>
+	<body>
+		<header id="titHorario"> <strong> Horario 2 Bach B </strong> </header>
+	   <div id="DivPrincipal">
+		<div  id="DivCentro">
+			<div id="DivHorario" >
+				<table id="horario" >
+					<tr>
+						<td> </td>
+						<td>Lunes</td>
+						<td>Martes</td>
+						<td>Miércoles</td>
+						<td>Jueves</td>
+						<td>Viernes</td>
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>8:30<br>9:20</p>
+						</td>
+						<td id="Celda11" class="fisica" onclick="TratarCasilla('Celda11', 'Física', 'Lunes  8:30-9:20');"> Física</td>
+						<td id="Celda21" class="matematicas" onclick="TratarCasilla('Celda21', 'Matemáticas', 'Martes  8:30-9:20');">Matemáticas</td>
+						<td id="Celda31" class="lengua" onclick="TratarCasilla('Celda31', 'Lengua', 'Miércoles  8:30-9:20');">Lengua</td>
+						<td id="Celda41" class="matematicas" onclick="TratarCasilla('Celda41', 'Matemáticas', 'Jueves  8:30-9:20');">Matemáticas</td>
+						<td id="Celda51" class="tecindustrial" onclick="TratarCasilla('Celda51', 'Tec. Industrial', 'Viernes  8:30-9:20');">Tec. Industrial</td>
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>9:25<br>10:15</p>
+						</td>
+						<td id="Celda12" class="tecindustrial" onclick="TratarCasilla('Celda12', 'Tec. Industrial', 'Lunes  9:25-10:15');">Tec. Industrial</td>
+						<td id="Celda22" class="ingles" onclick="TratarCasilla('Celda22', 'Inglés', 'Martes  9:25-10:15');">Inglés</td>
+						<td id="Celda32" class="tecindustrial" onclick="TratarCasilla('Celda32', 'Tec. Industrial', 'Miércoles  9:25-10:15');">Tec. Industrial</td>
+						<td id="Celda42" class="dibujo" onclick="TratarCasilla('Celda42', 'Dibujo', 'Jueves  9:25-10:15');">Dibujo</td>
+						<td id="Celda52" class="ingles" onclick="TratarCasilla('Celda52', 'Inglés', 'Viernes  9:25-10:15');">Inglés</td>
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>10:20<br>11:10</p>
+						</td>
+						<td id="Celda13" class="matematicas" onclick="TratarCasilla('Celda13', 'Matemáticas', 'Lunes  10:20-11:10');">Matemáticas</td>
+						<td id="Celda23" class="dibujo" onclick="TratarCasilla('Celda23', 'Dibujo', 'Martes  10:20-11:10');">Dibujo</td>
+						<td id="Celda33" class="dibujo" onclick="TratarCasilla('Celda33', 'Dibujo', 'Miércoles  10:20-11:10');">Dibujo</td>
+						<td id="Celda43" class="tecindustrial" onclick="TratarCasilla('Celda43', 'Tec. Industrial', 'Jueves  10:20-11:10');">Tec. Industrial</td>
+						<td id="Celda53" class="fisica" onclick="TratarCasilla('Celda53', 'Física', 'Viernes  10:20-11:10');">Física</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td colspan="5">Recreo</td>
+
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>11:40<br>12:30</p>
+						</td>
+						<td id="Celda14" class="lengua" onclick="TratarCasilla('Celda14', 'Lengua', 'Lunes  11:40-12:30');">Lengua</td>
+						<td id="Celda24" class="fisica" onclick="TratarCasilla('Celda24', 'Física', 'Martes  11:40-12:30');">Física</td>
+						<td id="Celda34" class="tic" onclick="TratarCasilla('Celda34', 'TIC', 'Miércoles  11:40-12:30');">TIC</td>
+						<td id="Celda44" class="tic" onclick="TratarCasilla('Celda44', 'TIC', 'Jueves  11:40-12:30');">TIC</td>
+						<td id="Celda54" class="lengua" onclick="TratarCasilla('Celda54', 'Lengua', 'Viernes  11:40-12:30');">Lengua</td>
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>12:35<br>13:25</p>
+						</td>
+						<td id="Celda15" class="hespaña" onclick="TratarCasilla('Celda15', 'H. España', 'Lunes  12:35-13:25');">H. España</td>
+						<td id="Celda25" class="hespaña" onclick="TratarCasilla('Celda25', 'H. España', 'Martes  12:35-13:25');">H. España</td>
+						<td id="Celda35" class="hespaña" onclick="TratarCasilla('Celda35', 'H. España', 'Miércoles  12:35-13:25');">H. España</td>
+						<td id="Celda45" class="fisica" onclick="TratarCasilla('Celda45', 'Física', 'Jueves  12:35-13:25');">Física</td>
+						<td id="Celda55" class="tic" onclick="TratarCasilla('Celda55', 'TIC', 'Viernes  12:35-13:25');">TIC</td>
+					</tr>
+					<tr>
+						<td id="hora">
+							<p>13:30<br>14:20</p>
+						</td>
+						<td id="Celda16" class="ingles" onclick="TratarCasilla('Celda16', 'Inglés', 'Lunes  13:30-14:20');">Inglés</td>
+						<td id="Celda26" class="lengua" onclick="TratarCasilla('Celda26', 'Lengua', 'Martes  13:30-14:20');">Lengua</td>
+						<td id="Celda36" class="matematicas" onclick="TratarCasilla('Celda36', 'Matemáticas', 'Miércoles  13:30-14:20');">Matemáticas</td>
+						<td id="Celda46" class="hespaña" onclick="TratarCasilla('Celda46', 'H. España', 'Jueves  13:30-14:20');">H. España</td>
+						<td id="Celda56" class="dibujo" onclick="TratarCasilla('Celda56', 'Dibujo', 'Viernes  13:30-14:20');">Dibujo</td>
+					</tr>
+			</table>
+			</div>
+			<div id="DivAbajo">
+			    <label for="tablaTareas">Tarea:</label>
+				<table id="tablaTareas">
+					<tr>
+						<td>
+							<label for="Dia">Día:</label>
+						</td>
+						<td>
+							<input type="text" id="DiaTarea" name="Dia" size="30" value="" readonly />
+						</td>
+					</tr> 
+					<tr>
+						<td>
+							<label for="Materia">Materia:</label>
+						</td>
+						<td>
+							<input id="Materia" type="text" name="Materia" readonly />
+						</td>
+					</tr> 
+					
+					<tr>
+						<td>
+							<label for="Tarea">Tarea:</label>
+						</td>
+						<td>
+							<textarea id="Tarea" name="Tarea" required></textarea>
+						</td>
+					</tr> 
+					<tr>
+						<td>
+						</td>
+						<td>
+						<div  id="Botones">					
+							<button onclick="ActualizarTarea()" >Actualizar Tarea</button> <br>
+						</div>
+						</td>
+					</tr>
+				</table>
+				<input type='hidden' id='id_celda' value="" />
+			</div>
+			<div id="DivFechas">
+				
+				<div  id="DivFechaHoy">
+				<br>
+					<label for="comboDia">Día actual para pruebas:</label>
+					<select id="comboDia">
+						<option value="1" selected>Lunes</option>   <!-- Opción por defecto -->
+						<option value="2" >Martes</option>
+						<option value="3">Miércoles</option>
+						<option value="4" >Jueves</option>
+						<option value="5" >Viernes</option>
+				    </select>
+					<br> <br>
+					<label for="comboHora">Hora del día:</label>
+					<select id="comboHora">
+						<option value="1" selected>9</option>   <!-- Opción por defecto -->
+						<option value="2" >10</option>
+						<option value="3">11</option>
+						<option value="4" >12</option>
+						<option value="5" >13</option>
+						<option value="6" >14</option>
+						<option value="7" >15</option>
+				    </select>
+					<br> <br>
+					<button onclick="ActualizarHoy()" >Actualizar calendario</button> <br> <br>
+				</div> 
+				<div id="DivCalendario">
+					<p> Calendario </p>
+					<label for="calendario">Seleccionar día: </label><input id="calendario" type="date" value="" onchange="tratarCalendario()"/> 
+				</div>
+			</div>
+		</div>
+		<div id="DivIzquierdo">
+				<p> Materias </p>	
+				<button onclick="CambiarEstadoMateria()"  name="Lengua" value="Off">Lengua</button> <br>
+				<button onclick="CambiarEstadoMateria()"  name="Dibujo" value="Off">Dibujo</button> <br>
+				<button onclick="CambiarEstadoMateria()"  name="hespaña" value="Off">Historia de España</button> <br>
+				<button onclick="CambiarEstadoMateria()"  name="tic" value="Off">TIC</button> <br>
+				<button onclick="CambiarEstadoMateria()"  name="fisica" value="Off">Física</button> <br>
+				<button onclick="CambiarEstadoMateria()"  name="matematicas" value="Off">Matemáticas</button>
+				<button onclick="CambiarEstadoMateria()"  name="ingles" value="Off">Inglés</button>
+				<button onclick="CambiarEstadoMateria()"  name="tecindustrial" value="Off">Tec. Industrial</button>
+		</div>
+		<div id="DivNotaMedia">  
+				<p> Calcular nota media </p>	
+				<table id="tablaNM">
+					<tr>
+						<td> Lengua</td>
+						<td> <input type="number" id="NotaL" size="3" min="0" max="10" required />  </td>
+					</tr> 
+					<tr>
+						<td> Dibujo</td>
+						<td> <input type="number" id="NotaD" size="10" min="0" max="10" required />  </td>
+					</tr> 
+					<tr>
+						<td> Hístoria de España</td>
+						<td> <input type="number" id="NotaH" size="10" min="0" max="10"  required />  </td>
+					</tr> 
+					<tr>
+						<td> TIC</td>
+						<td> <input type="number" id="NotaTIC" size="10" min="0" max="10" required />  </td>
+					</tr>
+					<tr>
+						<td> Física</td>
+						<td> <input type="number" id="NotaF" size="10" min="0" max="10" required />  </td>
+					</tr> 
+					<tr>
+						<td> Matemáticas</td>
+						<td> <input type="number" id="NotaM" size="10" min="0" max="10" required />  </td>
+					</tr> 
+					<tr>
+						<td> Inglés</td>
+						<td> <input type="number" id="NotaI" size="10" min="0" max="10" required />  </td>
+					</tr>
+					<tr>
+						<td> Tec. Industrial</td>
+						<td> <input type="number" id="NotaT" size="10" min="0" max="10" srequired />  </td>
+					</tr> 
+					<tr>
+						<td>
+						<button id="BotonMedia" onclick="CalcularNotaMedia()" >Calcular media</button> <br>
+						</td>
+						<td>
+						  <input type="number" id="ResultadoNM" size="10" min="0" max="10" value="" readonly />
+						</td>
+					</tr>
+				</table>
+				<div id="divFantasma">
+				   <div class="object">
+					</div>
+					
+					<img src="shadow.png">
+				</div>
+			</div>
+		
+	  </div>
+	</body>
+</html>
+
+			
+				
+				
+			
